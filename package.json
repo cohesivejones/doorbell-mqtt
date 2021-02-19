@@ -1,0 +1,11 @@
+{
+  "name": "mqtt",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "mqtt": "^2.15.0"
+  }
+}
