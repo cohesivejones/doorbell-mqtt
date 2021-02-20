@@ -7,6 +7,7 @@ const DOORBELL_ACTIVE = 'doorbell/active';
 
 client.on('connect', () => {
   client.subscribe(DOORBELL_ACTIVE);
+  client.publish(DOORBELL_ACTIVE, '');
 })
 
 client.on('message', (topic, message) => {
