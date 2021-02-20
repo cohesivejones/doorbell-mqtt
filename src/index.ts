@@ -1,4 +1,5 @@
 import mqtt from 'mqtt';
+import express from 'express';
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
@@ -20,3 +21,13 @@ client.on('message', (topic, message) => {
       console.log('No handler for topic %s', topic)
   }
 })
+
+const app = express()
+app.use(express.static("public"))
+
+app.get("/", function (_req, res) {
+  res.send(timestamps.map((t) => new Date(t).toISOString()).join(', '))
+})
+
+app.listen(process.env.PORT || 3000,
+  () => console.log("Server is running..."));
