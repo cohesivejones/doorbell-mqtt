@@ -1,23 +1,23 @@
 import React from "react";
+import moment from "moment-timezone";
 import * as ReactDOM from 'react-dom';
 
-const HelloWord = () => {
+const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
 
   React.useEffect(async () => {
     const response = await fetch('/timestamps')
     const data = await response.json()
-    debugger
     setTimestamps(data)
   }, []);
   return (
     <span>
       <ul>
         {timestamps.map(timestamp => {
-          return <li key={timestamp}><b>{timestamp}</b></li>
+          return <li key={timestamp}><b>{moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}</b></li>
         })}
       </ul>
     </span>
   );
 }
-ReactDOM.render(<HelloWord />, document.getElementById('root'))
+ReactDOM.render(<Doorbell />, document.getElementById('root'))
