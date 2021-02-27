@@ -1,10 +1,10 @@
 import express from 'express';
 import mqtt from 'mqtt';
 import path from 'path';
+import db from './config';
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
-let timestamps: number[] = [];
 const DOORBELL_ACTIVE = 'doorbell/active';
 
 client.on('connect', () => {
@@ -16,7 +16,15 @@ client.on('message', (topic, message) => {
   console.log('received message %s %s', topic, message)
   switch (topic) {
     case DOORBELL_ACTIVE:
-      timestamps.push(Date.now());
+      db.query(
+        'INSERT INTO events (created_at) VALUES ($1)',
+        [new Date().toISOString()],
+        (error) => {
+          if (error) {
+            throw error
+          }
+        },
+      )
       break;
     default:
       console.log('No handler for topic %s', topic)
@@ -26,7 +34,12 @@ client.on('message', (topic, message) => {
 const app = express()
 
 app.get('/timestamps', (req, res) => {
-  res.json(timestamps.map((t) => new Date(t).toISOString()))
+  db.query('SELECT created_at FROM events', (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.status(200).json(results.rows.map((row) => row.created_at));
+  })
 })
 
 const staticFiles = express.static(path.join(__dirname, '../client/build'))
