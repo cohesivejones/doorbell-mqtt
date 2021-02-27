@@ -5,7 +5,6 @@ import path from 'path';
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
 let timestamps: number[] = [];
-timestamps.push(Date.now());
 const DOORBELL_ACTIVE = 'doorbell/active';
 
 client.on('connect', () => {
