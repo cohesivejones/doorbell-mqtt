@@ -30,7 +30,7 @@ app.get('/timestamps', (req, res) => {
   res.json(timestamps.map((t) => new Date(t).toISOString()))
 })
 
-const staticFiles = express.static(path.join(__dirname, '../../client/build'))
+const staticFiles = express.static(path.join(__dirname, '../client/build'))
 
 app.use(staticFiles)
 
