@@ -1,9 +1,11 @@
-import mqtt from 'mqtt';
 import express from 'express';
+import mqtt from 'mqtt';
+import path from 'path';
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
 let timestamps: number[] = [];
+timestamps.push(Date.now());
 const DOORBELL_ACTIVE = 'doorbell/active';
 
 client.on('connect', () => {
@@ -23,11 +25,16 @@ client.on('message', (topic, message) => {
 })
 
 const app = express()
-app.use(express.static("public"))
 
-app.get("/", function (_req, res) {
-  res.send(timestamps.map((t) => new Date(t).toISOString()).join(', '))
+app.get('/timestamps', (req, res) => {
+  res.json(timestamps.map((t) => new Date(t).toISOString()))
 })
 
-app.listen(process.env.PORT || 3000,
+const staticFiles = express.static(path.join(__dirname, '../../client/build'))
+
+app.use(staticFiles)
+
+app.use('/*', staticFiles)
+
+app.listen(process.env.PORT || 3001,
   () => console.log("Server is running..."));
