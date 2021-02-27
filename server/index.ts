@@ -42,7 +42,7 @@ app.get('/timestamps', (req, res) => {
 })
 app.get('/status', (req, res) => {
   db.query('SELECT status FROM events ORDER BY created_at desc LIMIT 1', (error, results) => {
-    res.status(200).json(results.rows.map((row) => row.status));
+    res.status(200).json(results.rows.map((row) => row.status)[0]);
   });
 })
 
