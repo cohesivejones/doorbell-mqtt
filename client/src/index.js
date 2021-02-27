@@ -6,6 +6,7 @@ const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState('inactive');
 
+  setTimeout(window.location.reload.bind(window.location), 2000);
   React.useEffect(async () => {
     const response = await fetch('/timestamps')
     const data = await response.json()
