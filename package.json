@@ -9,7 +9,7 @@
     "node": "12.16.1"
   },
   "scripts": {
-    "build": "concurrently \"cd client && yarn run build\" \"cd server && yarn run build\"",
+    "build": "concurrently \"cd client && yarn run build\"",
     "clean": "concurrently \"cd server && rimraf node_modules build\" \"cd client && rimraf node_modules build\"",
     "postinstall": "(cd client && yarn install) && (cd server && yarn install)",
     "start": "concurrently \"cd client && yarn run start\" \"cd server && yarn run start\"",
