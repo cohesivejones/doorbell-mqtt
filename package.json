@@ -12,7 +12,8 @@
     "build": "concurrently \"cd client && yarn run build\" \"cd server && yarn run build\"",
     "clean": "concurrently \"cd server && rimraf node_modules build\" \"cd client && rimraf node_modules build\"",
     "postinstall": "(cd client && yarn install) && (cd server && yarn install)",
-    "start": "concurrently \"cd client && yarn run start\" \"cd server && yarn run start\""
+    "start": "concurrently \"cd client && yarn run start\" \"cd server && yarn run start\"",
+    "start:prod": "cd server && yarn run start"
   },
   "dependencies": {
     "concurrently": "^4.0.1",
