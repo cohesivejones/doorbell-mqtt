@@ -2,21 +2,39 @@ import React from "react";
 import moment from "moment-timezone";
 import * as ReactDOM from 'react-dom';
 
+const useInterval = (callback, delay) => {
+  const savedCallback = React.useRef();
+
+  React.useEffect(() => {
+    savedCallback.current = callback;
+  });
+
+  React.useEffect(() => {
+    function tick() {
+      savedCallback.current();
+    }
+
+    let id = setInterval(tick, delay);
+    return () => clearInterval(id);
+  }, [delay]);
+}
+
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState('');
 
-  setTimeout(window.location.reload.bind(window.location), 2000);
-  React.useEffect(async () => {
+  useInterval(async () => {
     const response = await fetch('/timestamps')
     const data = await response.json()
     setTimestamps(data)
-  }, []);
-  React.useEffect(async () => {
+  }, 1000);
+
+  useInterval(async () => {
     const response = await fetch('/status')
     const data = await response.json()
     setStatus(data)
-  }, []);
+  }, 1000);
+
   return (
     <div>
       <span>STATUS: {status}</span>
