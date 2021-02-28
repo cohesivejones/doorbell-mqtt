@@ -9,8 +9,7 @@ const DOORBELL_ACTIVE = 'doorbell/active';
 const DOORBELL_INACTIVE = 'doorbell/inactive';
 
 client.on('connect', () => {
-  client.subscribe(DOORBELL_ACTIVE);
-  client.subscribe(DOORBELL_INACTIVE);
+  client.subscribe([DOORBELL_ACTIVE, DOORBELL_INACTIVE]);
 })
 
 client.on('message', (topic, message) => {
