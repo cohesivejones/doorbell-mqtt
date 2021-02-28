@@ -36,7 +36,7 @@ client.on('message', (topic, message) => {
 const app = express()
 
 app.get('/timestamps', (req, res) => {
-  db.query('SELECT created_at FROM events WHERE status == "active" ORDER BY created_at desc', (error, results) => {
+  db.query("SELECT created_at FROM events WHERE status = 'active' ORDER BY created_at desc", (error, results) => {
     res.status(200).json(results?.rows.map((row) => row.created_at));
   });
 })
