@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom';
 
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
-  const [status, setStatus] = React.useState('inactive');
+  const [status, setStatus] = React.useState('');
 
   setTimeout(window.location.reload.bind(window.location), 2000);
   React.useEffect(async () => {
