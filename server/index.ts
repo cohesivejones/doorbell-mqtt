@@ -37,12 +37,12 @@ const app = express()
 
 app.get('/timestamps', (req, res) => {
   db.query('SELECT created_at FROM events WHERE status == "active" ORDER BY created_at desc', (error, results) => {
-    res.status(200).json(results.rows.map((row) => row.created_at));
+    res.status(200).json(results?.rows.map((row) => row.created_at));
   });
 })
 app.get('/status', (req, res) => {
   db.query('SELECT status FROM events ORDER BY created_at desc LIMIT 1', (error, results) => {
-    res.status(200).json(results.rows.map((row) => row.status)[0]);
+    res.status(200).json(results?.rows.map((row) => row.status)[0]);
   });
 })
 
