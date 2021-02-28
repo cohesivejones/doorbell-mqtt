@@ -1,7 +1,8 @@
+import 'newrelic'
+import db from './config';
 import express from 'express';
 import mqtt from 'mqtt';
 import path from 'path';
-import db from './config';
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
