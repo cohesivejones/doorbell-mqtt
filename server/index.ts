@@ -49,8 +49,8 @@ app.get('/status', (req, res) => {
 })
 
 app.post('/buzzer', (req, res) => {
-  client.publish(DOORBELL_BUZZER, '');
-  res.status(201);
+  client.publish(DOORBELL_BUZZER, 'test');
+  res.status(201).json();
 })
 
 const staticFiles = express.static(path.join(__dirname, '../client/build'))

@@ -28,20 +28,22 @@ const Doorbell = () => {
     const response = await fetch('/timestamps')
     const data = await response.json()
     setTimestamps(data)
-  }, 1000);
+  }, 2000);
 
   useInterval(async () => {
     const response = await fetch('/status')
     const data = await response.json()
     setStatus(data)
-  }, 1000);
+  }, 2000);
 
   const openDoor = () => fetch('/buzzer', { method: 'POST' });
 
   return (
     <div>
       <span>STATUS: {status}</span>
-      <button onClick={openDoor} disabled={isInactive}>Buzzer</button>
+      <span>
+        <button onClick={openDoor} disabled={isInactive}>Buzzer</button>
+      </span>
       <ul>
         {timestamps.map(timestamp => {
           return <li key={timestamp}><b>{moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}</b></li>
