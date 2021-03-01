@@ -40,10 +40,10 @@ const Doorbell = () => {
 
   return (
     <div>
-      <span>STATUS: {status}</span>
-      <span>
+      <div>STATUS: {status}</div>
+      <div>
         <button onClick={openDoor} disabled={isInactive}>Buzzer</button>
-      </span>
+      </div>
       <ul>
         {timestamps.map(timestamp => {
           return <li key={timestamp}><b>{moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}</b></li>
