@@ -8,6 +8,7 @@ const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
 const DOORBELL_ACTIVE = 'doorbell/active';
 const DOORBELL_INACTIVE = 'doorbell/inactive';
+const DOORBELL_BUZZER = 'doorbell/buzzer';
 
 client.on('connect', () => {
   client.subscribe([DOORBELL_ACTIVE, DOORBELL_INACTIVE]);
@@ -40,10 +41,16 @@ app.get('/timestamps', (req, res) => {
     res.status(200).json(results?.rows.map((row) => row.created_at));
   });
 })
+
 app.get('/status', (req, res) => {
   db.query('SELECT status FROM events ORDER BY created_at desc LIMIT 1', (error, results) => {
     res.status(200).json(results?.rows.map((row) => row.status)[0]);
   });
+})
+
+app.post('/buzzer', (req, res) => {
+  client.publish(DOORBELL_BUZZER, '');
+  res.status(201);
 })
 
 const staticFiles = express.static(path.join(__dirname, '../client/build'))

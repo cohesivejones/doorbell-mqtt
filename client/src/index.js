@@ -22,6 +22,7 @@ const useInterval = (callback, delay) => {
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState('');
+  const isInactive = status !== "active"
 
   useInterval(async () => {
     const response = await fetch('/timestamps')
@@ -35,9 +36,12 @@ const Doorbell = () => {
     setStatus(data)
   }, 1000);
 
+  const openDoor = () => fetch('/buzzer', { method: 'POST' });
+
   return (
     <div>
       <span>STATUS: {status}</span>
+      <button onClick={openDoor} disabled={isInactive}>Buzzer</button>
       <ul>
         {timestamps.map(timestamp => {
           return <li key={timestamp}><b>{moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}</b></li>
