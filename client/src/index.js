@@ -36,6 +36,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const formatTimestamp = (timestamp) => {
+  const date = moment(timestamp);
+  const today = moment().startOf('day')
+  const yesterday = moment().subtract(1, 'day').startOf('day')
+
+  if (date > today) return `Today ${date.format('h:mm:ss a')}`
+  if (date > yesterday) return `Yesterday ${date.format('h:mm:ss a')}`
+  return date.format('MMMM Do YYYY, h:mm:ss a');
+}
+
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState('');
@@ -75,7 +85,7 @@ const Doorbell = () => {
             <List>
               {timestamps.map(timestamp => (
                 <ListItemText key={timestamp}>
-                  {moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}
+                  {formatTimestamp(timestamp)}
                 </ListItemText>
               )
               )}
