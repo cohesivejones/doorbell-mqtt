@@ -1,6 +1,8 @@
 import React from "react";
 import moment from "moment-timezone";
 import * as ReactDOM from 'react-dom';
+import { Button, List, ListItemText, Container } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 
 const useInterval = (callback, delay) => {
   const savedCallback = React.useRef();
@@ -39,17 +41,34 @@ const Doorbell = () => {
   const openDoor = () => fetch('/buzzer', { method: 'POST' });
 
   return (
-    <div>
-      <div>STATUS: {status}</div>
-      <div>
-        <button onClick={openDoor} disabled={isInactive}>Buzzer</button>
-      </div>
-      <ul>
-        {timestamps.map(timestamp => {
-          return <li key={timestamp}><b>{moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}</b></li>
-        })}
-      </ul>
-    </div>
+    <Container maxWidth="md" component="main">
+      {
+        isInactive && (
+          <Alert severity="info">
+            <AlertTitle>Device Status: INACTIVE</AlertTitle>
+          </Alert>
+        )
+      }
+      {
+        !isInactive && (
+          <Alert severity="success">
+            <AlertTitle>Device Status: ACTIVE</AlertTitle>
+            <Button variant="contained" color="primary" onClick={openDoor}>Buzzer</Button>
+          </Alert >
+        )
+      }
+      <section>
+        <h3>Activation timestamps:</h3>
+        <List>
+          {timestamps.map(timestamp => (
+            <ListItemText key={timestamp}>
+              {moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}
+            </ListItemText>
+          )
+          )}
+        </List>
+      </section>
+    </Container >
   );
 }
 ReactDOM.render(<Doorbell />, document.getElementById('root'))
