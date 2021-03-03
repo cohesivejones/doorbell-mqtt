@@ -1,8 +1,11 @@
 import React from "react";
-import moment from "moment-timezone";
 import * as ReactDOM from 'react-dom';
-import { Button, List, ListItemText, Container } from '@material-ui/core';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import moment from "moment-timezone";
 import { Alert, AlertTitle } from '@material-ui/lab';
+import { Button, List, ListItemText, Container } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useInterval = (callback, delay) => {
   const savedCallback = React.useRef();
@@ -21,10 +24,22 @@ const useInterval = (callback, delay) => {
   }, [delay]);
 }
 
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'start',
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
+
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState('');
-  const isInactive = status !== "active"
+  const isInactive = status !== "active";
 
   useInterval(async () => {
     const response = await fetch('/timestamps')
@@ -39,36 +54,36 @@ const Doorbell = () => {
   }, 2000);
 
   const openDoor = () => fetch('/buzzer', { method: 'POST' });
+  const classes = useStyles();
 
   return (
-    <Container maxWidth="md" component="main">
-      {
-        isInactive && (
-          <Alert severity="info">
-            <AlertTitle>Device Status: INACTIVE</AlertTitle>
-          </Alert>
-        )
-      }
-      {
-        !isInactive && (
-          <Alert severity="success">
-            <AlertTitle>Device Status: ACTIVE</AlertTitle>
-            <Button variant="contained" color="primary" onClick={openDoor}>Buzzer</Button>
-          </Alert >
-        )
-      }
-      <section>
-        <h3>Activation timestamps:</h3>
-        <List>
-          {timestamps.map(timestamp => (
-            <ListItemText key={timestamp}>
-              {moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}
-            </ListItemText>
-          )
-          )}
-        </List>
-      </section>
-    </Container >
+    <div>
+      <Alert severity={isInactive ? 'info' : 'success'}>
+        <AlertTitle>Device Status: {isInactive ? 'INACTIVE' : 'ACTIVE'}</AlertTitle>
+      </Alert>
+      <Container maxWidth="md" component="main">
+        <CssBaseline />
+        {!isInactive && <Button fullWidth variant="contained" color="primary" className={classes.submit} onClick={openDoor}>
+          Buzzer
+        </Button>
+        }
+        <div className={classes.paper}>
+          <section>
+            <Typography component="h3" variant="h5">
+              Activation times
+            </Typography>
+            <List>
+              {timestamps.map(timestamp => (
+                <ListItemText key={timestamp}>
+                  {moment(timestamp).format('MMMM Do YYYY, h:mm:ss a')}
+                </ListItemText>
+              )
+              )}
+            </List>
+          </section>
+        </div>
+      </Container >
+    </div>
   );
 }
 ReactDOM.render(<Doorbell />, document.getElementById('root'))
