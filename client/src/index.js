@@ -5,24 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import { Button, List, ListItemText, Container } from "@material-ui/core";
 import { formatTimestamp } from "./utils";
+import { useInterval } from "./hooks";
 import { makeStyles } from "@material-ui/core/styles";
-
-const useInterval = (callback, delay) => {
-  const savedCallback = React.useRef();
-
-  React.useEffect(() => {
-    savedCallback.current = callback;
-  });
-
-  React.useEffect(() => {
-    function tick() {
-      savedCallback.current();
-    }
-
-    let id = setInterval(tick, delay);
-    return () => clearInterval(id);
-  }, [delay]);
-};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -35,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
+
 const Doorbell = () => {
   const [timestamps, setTimestamps] = React.useState([]);
   const [status, setStatus] = React.useState("");
