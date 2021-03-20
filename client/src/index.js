@@ -1,35 +1,15 @@
 import React, { useState } from "react";
 import * as ReactDOM from "react-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Typography from "@material-ui/core/Typography";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { Button, List, ListItemText, Container } from "@material-ui/core";
-import { formatTimestamp } from "./utils";
+import { Container } from "@material-ui/core";
+import { Timestamps } from "./components/Timestamps";
+import { BuzzerButton } from "./components/BuzzerButton";
+import { DeviceStatus } from "./components/DeviceStatus";
 import { useInterval } from "./hooks";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "start",
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
 const Doorbell = () => {
-  const [timestamps, setTimestamps] = useState([]);
   const [status, setStatus] = useState("");
   const isInactive = status !== "active";
-
-  useInterval(async () => {
-    const response = await fetch("/timestamps");
-    const data = await response.json();
-    setTimestamps(data);
-  }, 2000);
 
   useInterval(async () => {
     const response = await fetch("/status");
@@ -37,43 +17,13 @@ const Doorbell = () => {
     setStatus(data);
   }, 2000);
 
-  const openDoor = () => fetch("/buzzer", { method: "POST" });
-  const classes = useStyles();
-
   return (
     <div>
-      <Alert severity={isInactive ? "info" : "success"}>
-        <AlertTitle>
-          Device Status: {isInactive ? "INACTIVE" : "ACTIVE"}
-        </AlertTitle>
-      </Alert>
+      <DeviceStatus isInactive={isInactive} />
       <Container maxWidth="md" component="main">
         <CssBaseline />
-        {!isInactive && (
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={openDoor}
-          >
-            Buzzer
-          </Button>
-        )}
-        <div className={classes.paper}>
-          <section>
-            <Typography component="h3" variant="h5">
-              Activation times
-            </Typography>
-            <List>
-              {timestamps.map((timestamp) => (
-                <ListItemText key={timestamp}>
-                  {formatTimestamp(timestamp)}
-                </ListItemText>
-              ))}
-            </List>
-          </section>
-        </div>
+        {!isInactive && <BuzzerButton />}
+        <Timestamps />
       </Container>
     </div>
   );
