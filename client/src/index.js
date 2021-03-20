@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as ReactDOM from "react-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Doorbell = () => {
-  const [timestamps, setTimestamps] = React.useState([]);
-  const [status, setStatus] = React.useState("");
+  const [timestamps, setTimestamps] = useState([]);
+  const [status, setStatus] = useState("");
   const isInactive = status !== "active";
 
   useInterval(async () => {
