@@ -10,8 +10,7 @@ import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
 import { LoginButton } from "./components/LoginButton";
 import { LogoutButton } from "./components/LogoutButton";
 
-const Main = () => {
-  const { isAuthenticated } = useAuth0();
+const AuthenticatedPage = () => {
   const [status, setStatus] = useState("");
   const isInactive = status !== "active";
   useInterval(async () => {
@@ -25,8 +24,7 @@ const Main = () => {
       <DeviceStatus isInactive={isInactive} />
       <Container maxWidth="md" component="main">
         <CssBaseline />
-        {!isAuthenticated && <LoginButton />}
-        {isAuthenticated && <LogoutButton />}
+        <LogoutButton />
         {!isInactive && <BuzzerButton />}
         <Timestamps />
       </Container>
@@ -34,13 +32,31 @@ const Main = () => {
   );
 };
 
+const LandingPage = () => (
+  <div>
+    <Container maxWidth="md" component="main">
+      <CssBaseline />
+      <LoginButton />
+      <Timestamps />
+    </Container>
+  </div>
+);
+
+const LoadingPage = () => (
+  <div>
+    <Container maxWidth="md" component="main">
+      <CssBaseline />
+      <div>Loading ...</div>
+    </Container>
+  </div>
+);
+
 const App = () => {
-  const { isLoading } = useAuth0();
+  const { isLoading, isAuthenticated } = useAuth0();
   if (isLoading) {
-    return <div>Loading ...</div>;
-  } else {
-    return <Main />;
+    return <LoadingPage />;
   }
+  return isAuthenticated ? <AuthenticatedPage /> : <LandingPage />;
 };
 
 ReactDOM.render(
