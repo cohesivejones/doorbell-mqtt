@@ -1,5 +1,6 @@
 CREATE TABLE events (
   id SERIAL PRIMARY KEY,
-  status TEXT,
+  name TEXT,
+  value TEXT,
   created_at TIMESTAMP WITH TIME ZONE
 );
