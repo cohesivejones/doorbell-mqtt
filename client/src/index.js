@@ -6,12 +6,14 @@ import { Timestamps } from "./components/Timestamps";
 import { BuzzerButton } from "./components/BuzzerButton";
 import { DeviceStatus } from "./components/DeviceStatus";
 import { useInterval } from "./hooks";
-import { Auth0Provider } from "@auth0/auth0-react";
+import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
+import { LoginButton } from "./components/LoginButton";
+import { LogoutButton } from "./components/LogoutButton";
 
-const App = () => {
+const Main = () => {
+  const { isAuthenticated } = useAuth0();
   const [status, setStatus] = useState("");
   const isInactive = status !== "active";
-
   useInterval(async () => {
     const response = await fetch("/status");
     const data = await response.json();
@@ -23,12 +25,24 @@ const App = () => {
       <DeviceStatus isInactive={isInactive} />
       <Container maxWidth="md" component="main">
         <CssBaseline />
+        {!isAuthenticated && <LoginButton />}
+        {isAuthenticated && <LogoutButton />}
         {!isInactive && <BuzzerButton />}
         <Timestamps />
       </Container>
     </div>
   );
 };
+
+const App = () => {
+  const { isLoading } = useAuth0();
+  if (isLoading) {
+    return <div>Loading ...</div>;
+  } else {
+    return <Main />;
+  }
+};
+
 ReactDOM.render(
   <Auth0Provider
     domain="dev-p6s2vrvp.us.auth0.com"
