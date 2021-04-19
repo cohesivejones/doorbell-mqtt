@@ -69,16 +69,7 @@ app.get("/timestamps", (_req, res) => {
 });
 
 app.get("/status", (_req, res) => {
-  db.query(
-    `SELECT value FROM events WHERE name = '${EventName.DEVICE_STATUS}' ORDER BY created_at desc LIMIT 1`,
-    (_error, results) => {
-      res
-        .status(200)
-        .json(
-          results?.rows.map((row) => row.value)[0] || DeviceStatus.INACTIVE
-        );
-    }
-  );
+  res.status(200).json(DeviceStatus.ACTIVE);
 });
 
 app.get("/battery", (_req, res) => {
