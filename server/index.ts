@@ -1,5 +1,4 @@
 import "newrelic";
-import db from "./config";
 import express from "express";
 import mqtt from "mqtt";
 import path from "path";
@@ -95,7 +94,7 @@ app.get("/status", (_req, res) => {
     },
     order: [["created_at", "DESC"]],
   }).then((event: Event) => {
-    res.status(200).json(event.value || DeviceState.INACTIVE);
+    res.status(200).json(event ? event.value : DeviceState.INACTIVE);
   });
 });
 
@@ -106,11 +105,11 @@ app.get("/battery", (_req, res) => {
     },
     order: [["created_at", "DESC"]],
   }).then((event: Event) => {
-    res.status(200).json(event.value || 0);
+    res.status(200).json(event ? event.value : 0);
   });
 });
 
-app.post("/buzzer", (req, res) => {
+app.post("/buzzer", (_req, res) => {
   client.publish(DOORBELL_BUZZER, "test");
   res.status(201).json();
 });
