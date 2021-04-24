@@ -38,33 +38,33 @@ enum EventName {
   BATTERY = "battery_state",
 }
 
-client.on("message", (topic, message) => {
+client.on("message", async (topic, message) => {
   console.log("received message %s %s", topic, message);
   const now = new Date().toISOString();
   switch (topic) {
     case DOORBELL_PRESSED:
-      Event.create({
+      await Event.create({
         name: EventName.OUTSIDE_BUTTON,
         value: ButtonState.PRESSED,
         created_at: now,
       });
       break;
     case DOORBELL_ACTIVE:
-      Event.create({
+      await Event.create({
         name: EventName.DEVICE_STATE,
         value: DeviceState.ACTIVE,
         created_at: now,
       });
       break;
     case DOORBELL_INACTIVE:
-      Event.create({
+      await Event.create({
         name: EventName.DEVICE_STATE,
         value: DeviceState.INACTIVE,
         created_at: now,
       });
       break;
     case DOORBELL_BATTERY:
-      Event.create({
+      await Event.create({
         name: EventName.BATTERY,
         value: message,
         created_at: now,
