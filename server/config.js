@@ -7,10 +7,13 @@ const isProduction = process.env.NODE_ENV === "production";
 const dbConnection = () => {
   if (isProduction) {
     return new Sequelize(process.env.DATABASE_URL, {
+      ssl: true,
       dialect: "postgres",
       dialectOptions: {
-        ssl: true,
-        rejectUnauthorized: false,
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
       },
     });
   } else {
