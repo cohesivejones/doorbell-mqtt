@@ -34,7 +34,7 @@ enum ButtonState {
 enum EventName {
   DEVICE_STATE = "device_state",
   OUTSIDE_BUTTON = "outside_button",
-  BATTERY = "battery_status",
+  BATTERY = "battery_state",
 }
 
 client.on("message", (topic, message) => {
