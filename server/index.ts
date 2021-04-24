@@ -3,6 +3,7 @@ import db from "./config";
 import express from "express";
 import mqtt from "mqtt";
 import path from "path";
+import Event from "./event";
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
@@ -42,28 +43,32 @@ client.on("message", (topic, message) => {
   const now = new Date().toISOString();
   switch (topic) {
     case DOORBELL_PRESSED:
-      db.query(
-        "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.OUTSIDE_BUTTON, ButtonState.PRESSED, now]
-      );
+      Event.create({
+        name: EventName.OUTSIDE_BUTTON,
+        value: ButtonState.PRESSED,
+        created_at: now,
+      });
       break;
     case DOORBELL_ACTIVE:
-      db.query(
-        "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.DEVICE_STATE, DeviceState.ACTIVE, now]
-      );
+      Event.create({
+        name: EventName.DEVICE_STATE,
+        value: DeviceState.ACTIVE,
+        created_at: now,
+      });
       break;
     case DOORBELL_INACTIVE:
-      db.query(
-        "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.DEVICE_STATE, DeviceState.INACTIVE, now]
-      );
+      Event.create({
+        name: EventName.DEVICE_STATE,
+        value: DeviceState.INACTIVE,
+        created_at: now,
+      });
       break;
     case DOORBELL_BATTERY:
-      db.query(
-        "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.BATTERY, message, now]
-      );
+      Event.create({
+        name: EventName.BATTERY,
+        value: message,
+        created_at: now,
+      });
       break;
     default:
       console.log("No handler for topic %s", topic);
@@ -73,32 +78,36 @@ client.on("message", (topic, message) => {
 const app = express();
 
 app.get("/timestamps", (_req, res) => {
-  db.query(
-    `SELECT created_at FROM events WHERE name = '${EventName.OUTSIDE_BUTTON}' ORDER BY created_at desc`,
-    (_error, results) => {
-      res.status(200).json(results?.rows.map((row) => row.created_at) || []);
-    }
-  );
+  Event.findAll({
+    where: {
+      name: EventName.OUTSIDE_BUTTON,
+    },
+    order: [["created_at", "DESC"]],
+  }).then((events: Event[]) => {
+    res.status(200).json(events.map((event) => event.created_at) || []);
+  });
 });
 
 app.get("/status", (_req, res) => {
-  db.query(
-    `SELECT value FROM events WHERE name = '${EventName.DEVICE_STATE}' ORDER BY created_at desc LIMIT 1`,
-    (_error, results) => {
-      res
-        .status(200)
-        .json(results?.rows.map((row) => row.value)[0] || DeviceState.INACTIVE);
-    }
-  );
+  Event.findOne({
+    where: {
+      name: EventName.DEVICE_STATE,
+    },
+    order: [["created_at", "DESC"]],
+  }).then((event: Event) => {
+    res.status(200).json(event.value || DeviceState.INACTIVE);
+  });
 });
 
 app.get("/battery", (_req, res) => {
-  db.query(
-    `SELECT value FROM events WHERE name = '${EventName.BATTERY}' ORDER BY created_at desc LIMIT 1`,
-    (_error, results) => {
-      res.status(200).json(results?.rows.map((row) => row.value)[0] || 0);
-    }
-  );
+  Event.findOne({
+    where: {
+      name: EventName.BATTERY,
+    },
+    order: [["created_at", "DESC"]],
+  }).then((event: Event) => {
+    res.status(200).json(event.value || 0);
+  });
 });
 
 app.post("/buzzer", (req, res) => {
