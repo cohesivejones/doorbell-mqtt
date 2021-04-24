@@ -10,6 +10,7 @@ const dbConnection = () => {
       dialect: "postgres",
       dialectOptions: {
         ssl: true,
+        rejectUnauthorized: false,
       },
     });
   } else {
