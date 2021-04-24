@@ -10,6 +10,7 @@ const DOORBELL_ACTIVE = "doorbell/active";
 const DOORBELL_INACTIVE = "doorbell/inactive";
 const DOORBELL_BUZZER = "doorbell/buzzer";
 const DOORBELL_BATTERY = "doorbell/battery";
+const DOORBELL_PRESSED = "doorbell/pressed";
 
 client.on("connect", () => {
   client.subscribe([
@@ -17,16 +18,22 @@ client.on("connect", () => {
     DOORBELL_INACTIVE,
     DOORBELL_BUZZER,
     DOORBELL_BATTERY,
+    DOORBELL_PRESSED,
   ]);
 });
 
-enum DeviceStatus {
+enum DeviceState {
   ACTIVE = "active",
   INACTIVE = "inactive",
 }
 
+enum ButtonState {
+  PRESSED = "pressed",
+}
+
 enum EventName {
-  DEVICE_STATUS = "device_status",
+  DEVICE_STATE = "device_state",
+  OUTSIDE_BUTTON = "outside_button",
   BATTERY = "battery_status",
 }
 
@@ -34,16 +41,22 @@ client.on("message", (topic, message) => {
   console.log("received message %s %s", topic, message);
   const now = new Date().toISOString();
   switch (topic) {
+    case DOORBELL_PRESSED:
+      db.query(
+        "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
+        [EventName.OUTSIDE_BUTTON, ButtonState.PRESSED, now]
+      );
+      break;
     case DOORBELL_ACTIVE:
       db.query(
         "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.DEVICE_STATUS, DeviceStatus.ACTIVE, now]
+        [EventName.DEVICE_STATE, DeviceState.ACTIVE, now]
       );
       break;
     case DOORBELL_INACTIVE:
       db.query(
         "INSERT INTO events (name, value, created_at) VALUES ($1, $2, $3)",
-        [EventName.DEVICE_STATUS, DeviceStatus.INACTIVE, now]
+        [EventName.DEVICE_STATE, DeviceState.INACTIVE, now]
       );
       break;
     case DOORBELL_BATTERY:
@@ -61,7 +74,7 @@ const app = express();
 
 app.get("/timestamps", (_req, res) => {
   db.query(
-    `SELECT created_at FROM events WHERE name = '${EventName.DEVICE_STATUS}' AND value = '${DeviceStatus.ACTIVE}' ORDER BY created_at desc`,
+    `SELECT created_at FROM events WHERE name = '${EventName.OUTSIDE_BUTTON}' ORDER BY created_at desc`,
     (_error, results) => {
       res.status(200).json(results?.rows.map((row) => row.created_at) || []);
     }
@@ -69,7 +82,14 @@ app.get("/timestamps", (_req, res) => {
 });
 
 app.get("/status", (_req, res) => {
-  res.status(200).json(DeviceStatus.ACTIVE);
+  db.query(
+    `SELECT value FROM events WHERE name = '${EventName.DEVICE_STATE}' ORDER BY created_at desc LIMIT 1`,
+    (_error, results) => {
+      res
+        .status(200)
+        .json(results?.rows.map((row) => row.value)[0] || DeviceState.INACTIVE);
+    }
+  );
 });
 
 app.get("/battery", (_req, res) => {
