@@ -8,7 +8,7 @@ const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
 const DOORBELL_ACTIVE = "doorbell/active";
 const DOORBELL_INACTIVE = "doorbell/inactive";
-const DOORBELL_BUZZER = "doorbell/buzzer";
+const DOORBELL_OPEN_DOOR = "doorbell/open-door";
 const DOORBELL_BATTERY = "doorbell/battery";
 const DOORBELL_PRESSED = "doorbell/pressed";
 
@@ -16,7 +16,7 @@ client.on("connect", () => {
   client.subscribe([
     DOORBELL_ACTIVE,
     DOORBELL_INACTIVE,
-    DOORBELL_BUZZER,
+    DOORBELL_OPEN_DOOR,
     DOORBELL_BATTERY,
     DOORBELL_PRESSED,
   ]);
@@ -109,8 +109,8 @@ app.get("/battery", (_req, res) => {
   });
 });
 
-app.post("/buzzer", (_req, res) => {
-  client.publish(DOORBELL_BUZZER, "test");
+app.post("/open-door", (_req, res) => {
+  client.publish(DOORBELL_OPEN_DOOR, "test");
   res.status(201).json();
 });
 

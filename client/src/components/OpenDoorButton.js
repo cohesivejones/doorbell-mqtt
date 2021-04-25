@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const BuzzerButton = () => {
-  const openDoor = () => fetch("/buzzer", { method: "POST" });
+export const OpenDoorButton = () => {
+  const openDoor = () => fetch("/open-door", { method: "POST" });
   const classes = useStyles();
   return (
     <Button
@@ -19,7 +19,7 @@ export const BuzzerButton = () => {
       className={classes.submit}
       onClick={openDoor}
     >
-      Buzzer
+      Open Door
     </Button>
   );
 };

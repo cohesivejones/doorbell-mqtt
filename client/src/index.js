@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { Container } from "@material-ui/core";
 import { Timestamps } from "./components/Timestamps";
-import { BuzzerButton } from "./components/BuzzerButton";
+import { OpenDoorButton } from "./components/OpenDoorButton";
 import { DeviceStatus } from "./components/DeviceStatus";
 import { useInterval } from "./hooks";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
@@ -25,7 +25,7 @@ const AuthenticatedPage = () => {
       <Container maxWidth="md" component="main">
         <CssBaseline />
         <LogoutButton />
-        {!isInactive && <BuzzerButton />}
+        {!isInactive && <OpenDoorButton />}
         <Timestamps />
       </Container>
     </div>
