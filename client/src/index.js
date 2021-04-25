@@ -61,8 +61,8 @@ const App = () => {
 
 ReactDOM.render(
   <Auth0Provider
-    domain="dev-p6s2vrvp.us.auth0.com"
-    clientId="5RmbMQK7Dv9lTPbvTey7K4eCgJ2gtWfH"
+    domain={process.env.REACT_APP_AUTH_DOMAIN}
+    clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
     redirectUri={window.location.origin}
   >
     <App />
