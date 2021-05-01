@@ -3,6 +3,9 @@ import express from "express";
 import mqtt from "mqtt";
 import path from "path";
 import Event from "./event";
+import jwt from "express-jwt";
+import jwtAuthz from "express-jwt-authz";
+import jwksRsa from "jwks-rsa";
 
 const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 
@@ -36,6 +39,24 @@ enum EventName {
   OUTSIDE_BUTTON = "outside_button",
   BATTERY = "battery_state",
 }
+
+const checkJwt = jwt({
+  // Dynamically provide a signing key
+  // based on the kid in the header and
+  // the signing keys provided by the JWKS endpoint.
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `https://${process.env.AUTH_DOMAIN}/.well-known/jwks.json`,
+  }),
+
+  // Validate the audience and the issuer.
+  audience: process.env.AUTH_AUDIENCE,
+  issuer: [`https://${process.env.AUTH_DOMAIN}/`],
+  algorithms: ["RS256"],
+});
+const checkScopes = jwtAuthz(["write:open-door"]);
 
 client.on("message", async (topic, message) => {
   console.log("received message %s %s", topic, message);
@@ -109,7 +130,7 @@ app.get("/battery", (_req, res) => {
   });
 });
 
-app.post("/open-door", (_req, res) => {
+app.post("/open-door", checkJwt, checkScopes, (_req, res) => {
   client.publish(DOORBELL_OPEN_DOOR, "test");
   res.status(201).json();
 });
