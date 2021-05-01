@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatTimestamp } from "../utils";
-import { useInterval } from "../hooks";
+import { useInterval } from "./hooks";
 import { List, ListItemText } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
