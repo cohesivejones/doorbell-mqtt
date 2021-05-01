@@ -1,4 +1,4 @@
-import connection from "./config";
+import connection from "../config";
 import { DataTypes, Model } from "sequelize";
 
 class Event extends Model {
