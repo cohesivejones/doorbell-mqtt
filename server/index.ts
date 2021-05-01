@@ -33,7 +33,9 @@ const checkJwt = jwt({
   issuer: [`https://${process.env.AUTH_DOMAIN}/`],
   algorithms: ["RS256"],
 });
-const checkScopes = jwtAuthz(["write:open-door"]);
+const openDoorScope = jwtAuthz(["write:open-door"]);
+const statusScope = jwtAuthz(["read:status"]);
+const batteryScope = jwtAuthz(["read:battery"]);
 
 client.on("message", async (topic, message) => {
   console.log("received message %s %s", topic, message);
@@ -76,11 +78,11 @@ const app = express();
 
 app.get("/timestamps", Controller.timestamps);
 
-app.get("/status", Controller.status);
+app.get("/status", checkJwt, openDoorScope, Controller.status);
 
-app.get("/battery", Controller.battery);
+app.get("/battery", checkJwt, batteryScope, Controller.battery);
 
-app.post("/open-door", checkJwt, checkScopes, Controller.openDoor(client));
+app.post("/open-door", checkJwt, statusScope, Controller.openDoor(client));
 
 const staticFiles = express.static(path.join(__dirname, "../client/build"));
 

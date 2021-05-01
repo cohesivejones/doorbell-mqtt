@@ -13,8 +13,17 @@ import { LogoutButton } from "./components/LogoutButton";
 const AuthenticatedPage = () => {
   const [status, setStatus] = useState("");
   const isInactive = status !== "active";
+  const { getAccessTokenSilently } = useAuth0();
   useInterval(async () => {
-    const response = await fetch("/status");
+    const token = await getAccessTokenSilently({
+      audience: process.env.REACT_APP_AUTH_AUDIENCE,
+      scope: "read:status",
+    });
+    const response = await fetch("/status", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     setStatus(data);
   }, 2000);
@@ -65,7 +74,7 @@ ReactDOM.render(
     clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
     redirectUri={window.location.origin}
     audience={process.env.REACT_APP_AUTH_AUDIENCE}
-    scope="write:open-door"
+    scope="read:battery read:status write:open-door"
   >
     <App />
   </Auth0Provider>,

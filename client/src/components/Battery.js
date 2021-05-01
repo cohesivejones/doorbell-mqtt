@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useInterval } from "../hooks";
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   BatteryAlert as Battery0,
   Battery20,
@@ -13,9 +14,18 @@ import {
 
 export const Battery = () => {
   const [battery, setBattery] = useState(0);
+  const { getAccessTokenSilently } = useAuth0();
 
   useInterval(async () => {
-    const response = await fetch("/battery");
+    const token = await getAccessTokenSilently({
+      audience: process.env.REACT_APP_AUTH_AUDIENCE,
+      scope: "read:battery",
+    });
+    const response = await fetch("/battery", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const data = await response.json();
     setBattery(data);
   }, 2000);
