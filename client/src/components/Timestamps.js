@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { formatTimestamp } from "../utils";
 import { useInterval } from "./hooks";
-import { List, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -31,9 +31,9 @@ export const Timestamps = () => {
         </Typography>
         <List>
           {timestamps.map((timestamp) => (
-            <ListItemText key={timestamp}>
-              {formatTimestamp(timestamp)}
-            </ListItemText>
+            <ListItem key={timestamp}>
+              <ListItemText>{formatTimestamp(timestamp)}</ListItemText>
+            </ListItem>
           ))}
         </List>
       </section>
