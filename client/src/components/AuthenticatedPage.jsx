@@ -6,7 +6,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Timestamps } from "./Timestamps";
 import { OpenDoorButton } from "./OpenDoorButton";
 import { DeviceStatus } from "./DeviceStatus";
-import { LogoutButton } from "./LogoutButton";
 
 export const AuthenticatedPage = () => {
   const [status, setStatus] = useState("");
@@ -28,14 +27,13 @@ export const AuthenticatedPage = () => {
   }, 2000);
 
   return (
-    <div>
+    <>
       <DeviceStatus isInactive={isInactive} />
       <Container maxWidth="md" component="main">
         <CssBaseline />
-        <LogoutButton />
         {!isInactive && <OpenDoorButton />}
         <Timestamps />
       </Container>
-    </div>
+    </>
   );
 };

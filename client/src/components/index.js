@@ -3,7 +3,6 @@ import { OpenDoorButton } from "./OpenDoorButton";
 import { DeviceStatus } from "./DeviceStatus";
 import { LoginButton } from "./LoginButton";
 import { LogoutButton } from "./LogoutButton";
-import { LoadingPage } from "./LoadingPage";
 import { LandingPage } from "./LandingPage";
 import { AuthenticatedPage } from "./AuthenticatedPage";
 
@@ -13,7 +12,6 @@ export {
   DeviceStatus,
   LoginButton,
   LogoutButton,
-  LoadingPage,
   LandingPage,
   AuthenticatedPage,
 };

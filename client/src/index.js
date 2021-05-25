@@ -1,14 +1,37 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
-import { AuthenticatedPage, LandingPage, LoadingPage } from "./components";
+import {
+  AuthenticatedPage,
+  LandingPage,
+  LoginButton,
+  LogoutButton,
+} from "./components";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    flexGrow: 1,
+  },
+}));
 
 const App = () => {
-  const { isLoading, isAuthenticated } = useAuth0();
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-  return isAuthenticated ? <AuthenticatedPage /> : <LandingPage />;
+  const { isAuthenticated } = useAuth0();
+  const classes = useStyles();
+  return (
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" className={classes.title}>
+            Doorbell @ Dr Nate
+          </Typography>
+          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+        </Toolbar>
+      </AppBar>
+      {isAuthenticated ? <AuthenticatedPage /> : <LandingPage />}
+    </>
+  );
 };
 
 ReactDOM.render(
