@@ -7,8 +7,9 @@ const timestamps = (_req, res) => {
       name: EventName.OUTSIDE_BUTTON,
     },
     order: [["created_at", "DESC"]],
+    limit: 5,
   }).then((events: Event[]) => {
-    res.status(200).json(events.map((event) => event.created_at) || []);
+    res.status(200).json(events.map((event) => event.created_at));
   });
 };
 
