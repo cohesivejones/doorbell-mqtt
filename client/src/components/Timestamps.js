@@ -29,10 +29,13 @@ export const Timestamps = () => {
         <Typography component="h3" variant="h5">
           Activation times
         </Typography>
-        <List>
-          {timestamps.map((timestamp) => (
+        <List dense={true}>
+          {timestamps.map(({ timestamp, open }) => (
             <ListItem key={timestamp}>
-              <ListItemText>{formatTimestamp(timestamp)}</ListItemText>
+              <ListItemText
+                primary={formatTimestamp(timestamp)}
+                secondary={open ? "(Opened)" : "(Buzzed)"}
+              />
             </ListItem>
           ))}
         </List>
