@@ -12,6 +12,7 @@ enum ButtonState {
 enum EventName {
   DEVICE_STATE = "device_state",
   OUTSIDE_BUTTON = "outside_button",
+  OPEN_DOOR_BUTTON = "open_door_button",
   BATTERY = "battery_state",
 }
 

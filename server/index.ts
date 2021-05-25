@@ -37,28 +37,31 @@ const openDoorScope = jwtAuthz(["write:open-door"]);
 const statusScope = jwtAuthz(["read:status"]);
 const batteryScope = jwtAuthz(["read:battery"]);
 
+const TOPIC_TO_NAME = {
+  [TOPIC.DOORBELL_PRESSED]: EventName.OUTSIDE_BUTTON,
+  [TOPIC.DOORBELL_OPEN_DOOR]: EventName.OPEN_DOOR_BUTTON,
+  [TOPIC.DOORBELL_ACTIVE]: EventName.DEVICE_STATE,
+  [TOPIC.DOORBELL_INACTIVE]: EventName.DEVICE_STATE,
+};
+
+const TOPIC_TO_VALUE = {
+  [TOPIC.DOORBELL_PRESSED]: ButtonState.PRESSED,
+  [TOPIC.DOORBELL_OPEN_DOOR]: ButtonState.PRESSED,
+  [TOPIC.DOORBELL_ACTIVE]: DeviceState.ACTIVE,
+  [TOPIC.DOORBELL_INACTIVE]: DeviceState.INACTIVE,
+};
+
 client.on("message", async (topic, message) => {
   console.log("received message %s %s", topic, message);
   const now = new Date().toISOString();
   switch (topic) {
     case TOPIC.DOORBELL_PRESSED:
-      await Event.create({
-        name: EventName.OUTSIDE_BUTTON,
-        value: ButtonState.PRESSED,
-        created_at: now,
-      });
-      break;
+    case TOPIC.DOORBELL_OPEN_DOOR:
     case TOPIC.DOORBELL_ACTIVE:
-      await Event.create({
-        name: EventName.DEVICE_STATE,
-        value: DeviceState.ACTIVE,
-        created_at: now,
-      });
-      break;
     case TOPIC.DOORBELL_INACTIVE:
       await Event.create({
-        name: EventName.DEVICE_STATE,
-        value: DeviceState.INACTIVE,
+        name: TOPIC_TO_NAME[topic],
+        value: TOPIC_TO_VALUE[topic],
         created_at: now,
       });
       break;
