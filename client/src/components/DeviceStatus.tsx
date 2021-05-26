@@ -13,11 +13,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const severity = (isInactive) => (isInactive ? "info" : "success");
-const status = (isInactive) =>
+const severity = (isInactive: boolean) => (isInactive ? "info" : "success");
+const status = (isInactive: boolean) =>
   `Device Status: ${isInactive ? "INACTIVE" : "ACTIVE"}`;
 
-export const DeviceStatus = ({ isInactive }) => {
+type Props = {
+  isInactive : boolean
+}
+export const DeviceStatus : React.FC<Props> = ({ isInactive }) => {
   const classes = useStyles();
   return (
     <Alert severity={severity(isInactive)} variant="filled">

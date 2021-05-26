@@ -1,6 +1,6 @@
 import moment from "moment-timezone";
 
-export const formatTimestamp = (timestamp) => {
+export const formatTimestamp = (timestamp: string) => {
   const date = moment(timestamp);
   const today = moment().startOf("day");
   const yesterday = moment().subtract(1, "day").startOf("day");

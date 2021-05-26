@@ -9,6 +9,7 @@ import {
 } from "./components";
 import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Config } from "./config";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -34,12 +35,13 @@ const App = () => {
   );
 };
 
+const config = new Config();
 ReactDOM.render(
   <Auth0Provider
-    domain={process.env.REACT_APP_AUTH_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH_CLIENT_ID}
+    domain={config.authDomain()}
+    clientId={config.authClientId()}
     redirectUri={window.location.origin}
-    audience={process.env.REACT_APP_AUTH_AUDIENCE}
+    audience={config.authAudience()}
     scope="read:battery read:status write:open-door"
   >
     <App />
