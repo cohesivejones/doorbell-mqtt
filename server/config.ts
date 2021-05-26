@@ -37,9 +37,10 @@ const dbConnection = () => {
 
 export enum TOPIC {
   DOORBELL_ACTIVE = "doorbell/active",
+  DOORBELL_BATTERY = "doorbell/battery",
   DOORBELL_INACTIVE = "doorbell/inactive",
   DOORBELL_OPEN_DOOR = "doorbell/open-door",
-  DOORBELL_BATTERY = "doorbell/battery",
+  DOORBELL_OPEN_DOOR_SUCCESS = "doorbell/open-door-success",
   DOORBELL_PRESSED = "doorbell/pressed",
 }
 

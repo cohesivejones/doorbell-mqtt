@@ -14,9 +14,10 @@ const client = mqtt.connect(process.env.CLOUDMQTT_URL);
 client.on("connect", () => {
   client.subscribe([
     TOPIC.DOORBELL_ACTIVE,
+    TOPIC.DOORBELL_BATTERY,
     TOPIC.DOORBELL_INACTIVE,
     TOPIC.DOORBELL_OPEN_DOOR,
-    TOPIC.DOORBELL_BATTERY,
+    TOPIC.DOORBELL_OPEN_DOOR_SUCCESS,
     TOPIC.DOORBELL_PRESSED,
   ]);
 });
@@ -39,14 +40,14 @@ const batteryScope = jwtAuthz(["read:battery"]);
 
 const TOPIC_TO_NAME = {
   [TOPIC.DOORBELL_PRESSED]: EventName.OUTSIDE_BUTTON,
-  [TOPIC.DOORBELL_OPEN_DOOR]: EventName.OPEN_DOOR_BUTTON,
+  [TOPIC.DOORBELL_OPEN_DOOR_SUCCESS]: EventName.OPEN_DOOR_BUTTON,
   [TOPIC.DOORBELL_ACTIVE]: EventName.DEVICE_STATE,
   [TOPIC.DOORBELL_INACTIVE]: EventName.DEVICE_STATE,
 };
 
 const TOPIC_TO_VALUE = {
   [TOPIC.DOORBELL_PRESSED]: ButtonState.PRESSED,
-  [TOPIC.DOORBELL_OPEN_DOOR]: ButtonState.PRESSED,
+  [TOPIC.DOORBELL_OPEN_DOOR_SUCCESS]: ButtonState.PRESSED,
   [TOPIC.DOORBELL_ACTIVE]: DeviceState.ACTIVE,
   [TOPIC.DOORBELL_INACTIVE]: DeviceState.INACTIVE,
 };
@@ -56,7 +57,7 @@ client.on("message", async (topic, message) => {
   const now = new Date().toISOString();
   switch (topic) {
     case TOPIC.DOORBELL_PRESSED:
-    case TOPIC.DOORBELL_OPEN_DOOR:
+    case TOPIC.DOORBELL_OPEN_DOOR_SUCCESS:
     case TOPIC.DOORBELL_ACTIVE:
     case TOPIC.DOORBELL_INACTIVE:
       await Event.create({
