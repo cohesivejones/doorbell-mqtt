@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { formatTimestamp } from "../utils";
 import { useInterval } from "./hooks";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemText, ListItemIcon } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { NotificationsActive, TouchApp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,6 +33,9 @@ export const Timestamps = () => {
         <List dense={true}>
           {timestamps.map(({ timestamp, open }) => (
             <ListItem key={timestamp}>
+              <ListItemIcon>
+                {open ? <TouchApp /> : <NotificationsActive />}
+              </ListItemIcon>
               <ListItemText
                 primary={formatTimestamp(timestamp)}
                 secondary={open ? "(Opened)" : "(Buzzed)"}
